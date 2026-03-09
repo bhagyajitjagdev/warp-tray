@@ -36,7 +36,7 @@ jobs:
         run: sed -i "s/^Version:.*/Version:        ${{ steps.version.outputs.VERSION }}/" warp-tray.spec
 
       - name: Build RPM
-        run: rpmbuild -bb warp-tray.spec --define "_topdir /tmp/rpmbuild"
+        run: rpmbuild -bb warp-tray.spec --define '_topdir /tmp/rpmbuild'
 
       - name: Upload RPM to release
         uses: softprops/action-gh-release@v2
