@@ -1,0 +1,40 @@
+name: Build RPM
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  build-rpm:
+    runs-on: ubuntu-latest
+    container: fedora:43
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install build tools
+        run: dnf install -y rpm-build rpmdevtools
+
+      - name: Setup rpmbuild tree
+        run: rpmdev-setuptree
+
+      - name: Get version from tag
+        id: version
+        run: echo "VERSION=${GITHUB_REF_NAME#v}" >> $GITHUB_OUTPUT
+
+      - name: Create source tarball
+        run: |
+          mkdir -p warp-tray-${{ steps.version.outputs.VERSION }}
+          cp warp-tray.py warp-tray.desktop LICENSE warp-tray-${{ steps.version.outputs.VERSION }}/
+          tar czf ~/rpmbuild/SOURCES/warp-tray-${{ steps.version.outputs.VERSION }}.tar.gz warp-tray-${{ steps.version.outputs.VERSION }}
+
+      - name: Update spec version
+        run: sed -i "s/^Version:.*/Version:        ${{ steps.version.outputs.VERSION }}/" warp-tray.spec
+
+      - name: Build RPM
+        run: rpmbuild -bb warp-tray.spec
+
+      - name: Upload RPM to release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ~/rpmbuild/RPMS/noarch/warp-tray-*.rpm
