@@ -39,7 +39,6 @@ class WarpTray:
         self._indicator.set_title("WARP")
         self._update_status()
         self._rebuild_menu()
-        self._ensure_autostart()
 
         # Poll WARP status
         GLib.timeout_add_seconds(POLL_INTERVAL, self._poll)
@@ -136,12 +135,6 @@ class WarpTray:
                 os.unlink(AUTOSTART_FILE)
             except OSError:
                 pass
-
-    def _ensure_autostart(self):
-        if not os.path.exists(AUTOSTART_FILE):
-            os.makedirs(AUTOSTART_DIR, exist_ok=True)
-            with open(AUTOSTART_FILE, "w") as f:
-                f.write(AUTOSTART_ENTRY)
 
     def _on_quit(self, _):
         Gtk.main_quit()

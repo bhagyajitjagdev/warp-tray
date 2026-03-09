@@ -29,7 +29,7 @@ jobs:
         run: |
           VERSION=${{ steps.version.outputs.VERSION }}
           mkdir -p warp-tray-${VERSION}
-          cp warp-tray.py warp-tray.desktop LICENSE warp-tray-${VERSION}/
+          cp warp-tray.py warp-tray.desktop warp-tray-autostart.desktop LICENSE warp-tray-${VERSION}/
           tar czf /tmp/rpmbuild/SOURCES/warp-tray-${VERSION}.tar.gz warp-tray-${VERSION}
 
       - name: Update spec version

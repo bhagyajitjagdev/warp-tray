@@ -23,11 +23,13 @@ Shows VPN connection status and lets you connect/disconnect from the tray.
 %install
 install -Dm755 warp-tray.py %{buildroot}%{_bindir}/warp-tray
 install -Dm644 warp-tray.desktop %{buildroot}%{_datadir}/applications/warp-tray.desktop
+install -Dm644 warp-tray-autostart.desktop %{buildroot}%{_sysconfdir}/xdg/autostart/warp-tray.desktop
 
 %files
 %license LICENSE
 %{_bindir}/warp-tray
 %{_datadir}/applications/warp-tray.desktop
+%{_sysconfdir}/xdg/autostart/warp-tray.desktop
 
 %changelog
 * Mon Mar 09 2026 Bhagyajit Jagdev - 1.0.0-1

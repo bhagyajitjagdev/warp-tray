@@ -1,0 +1,9 @@
+[Desktop Entry]
+Type=Application
+Name=WARP Tray
+Comment=Cloudflare WARP tray indicator
+Exec=/usr/bin/warp-tray
+Icon=network-vpn-symbolic
+Terminal=false
+Categories=Utility;
+X-GNOME-Autostart-enabled=true
