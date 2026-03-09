@@ -4,6 +4,9 @@ on:
   release:
     types: [published]
 
+permissions:
+  contents: write
+
 jobs:
   build-rpm:
     runs-on: ubuntu-latest
@@ -16,7 +19,8 @@ jobs:
         run: dnf install -y rpm-build rpmdevtools
 
       - name: Setup rpmbuild tree
-        run: rpmdev-setuptree
+        run: |
+          mkdir -p /tmp/rpmbuild/{BUILD,RPMS,SOURCES,SPECS,SRPMS}
 
       - name: Get version from tag
         id: version
@@ -26,15 +30,15 @@ jobs:
         run: |
           mkdir -p warp-tray-${{ steps.version.outputs.VERSION }}
           cp warp-tray.py warp-tray.desktop LICENSE warp-tray-${{ steps.version.outputs.VERSION }}/
-          tar czf ~/rpmbuild/SOURCES/warp-tray-${{ steps.version.outputs.VERSION }}.tar.gz warp-tray-${{ steps.version.outputs.VERSION }}
+          tar czf /tmp/rpmbuild/SOURCES/warp-tray-${{ steps.version.outputs.VERSION }}.tar.gz warp-tray-${{ steps.version.outputs.VERSION }}
 
       - name: Update spec version
         run: sed -i "s/^Version:.*/Version:        ${{ steps.version.outputs.VERSION }}/" warp-tray.spec
 
       - name: Build RPM
-        run: rpmbuild -bb warp-tray.spec
+        run: rpmbuild -bb warp-tray.spec --define "_topdir /tmp/rpmbuild"
 
       - name: Upload RPM to release
         uses: softprops/action-gh-release@v2
         with:
-          files: ~/rpmbuild/RPMS/noarch/warp-tray-*.rpm
+          files: /tmp/rpmbuild/RPMS/noarch/warp-tray-*.rpm
